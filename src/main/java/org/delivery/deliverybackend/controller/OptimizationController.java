@@ -1,52 +1,52 @@
 package org.delivery.deliverybackend.controller;
 
 import org.delivery.deliverybackend.model.*;
+import org.delivery.deliverybackend.service.AssignmentAgent;
+import org.delivery.deliverybackend.service.RoutingService; // Import your new A* Engine!
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "*") // CORS
+@CrossOrigin(origins = "*")
 public class OptimizationController {
 
-    @PostMapping("/assignAgent")
-    public ResponseEntity<Order> assignAgent(@RequestBody Map<String, String> payload) {
-        String orderId = payload.get("orderId");
-        System.out.println("Stub: Running Assignment Agent for order " + orderId);
+    private final AssignmentAgent assignmentAgent;
+    private final RoutingService routingService; // 1. Add the Routing Service
 
-        Order updatedOrder = new Order(
-                orderId != null ? orderId : "ORD-1001",
-                new Location(28.6139, 77.2090), // Connaught Place
-                new Location(28.5355, 77.3910), // Noida
-                OrderStatus.ASSIGNED,
-                System.currentTimeMillis() + 3600000,
-                1,
-                "agent-001"
-        );
+    // 2. Inject it via Constructor
+    public OptimizationController(AssignmentAgent assignmentAgent, RoutingService routingService) {
+        this.assignmentAgent = assignmentAgent;
+        this.routingService = routingService;
+    }
+
+    // (Keep your existing assignAgent method here...)
+    @PostMapping("/assignAgent")
+    public ResponseEntity<Order> assignAgent(@RequestBody Map<String, String> payload) throws Exception {
+        String orderId = payload.get("orderId");
+        System.out.println("Running REAL Assignment Agent for order: " + orderId);
+        Order updatedOrder = assignmentAgent.assignBestAgent(orderId);
         return ResponseEntity.ok(updatedOrder);
     }
 
+    // 3. THE REAL A* ROUTING ENDPOINT
     @PostMapping("/optimizeRoute")
-    public ResponseEntity<Route> optimizeRoute(@RequestBody Map<String, String> payload) {
-        String agentId = payload.get("agentId");
-        System.out.println("Stub: Calculating optimal route for agent " + agentId);
+    public ResponseEntity<List<String>> optimizeRoute(@RequestBody Map<String, String> payload) {
+        String startId = payload.get("startNodeId");
+        String targetId = payload.get("targetNodeId");
 
-        Route fakeRoute = new Route(
-                "RT-999",
-                agentId != null ? agentId : "agent-001",
-                Arrays.asList("ORD-1001", "ORD-1002"),
-                Arrays.asList(new Location(28.6139, 77.2090), new Location(28.5355, 77.3910)),
-                45,
-                RouteStatus.ACTIVE,
-                System.currentTimeMillis(),
-                15.2,
-                System.currentTimeMillis() + 2700000
-        );
-        return ResponseEntity.ok(fakeRoute);
+        System.out.println("Received routing request from " + startId + " to " + targetId);
+
+        // Call the Head Chef to run the math!
+        List<String> optimalPath = routingService.findFastestRoute(startId, targetId);
+
+        return ResponseEntity.ok(optimalPath);
     }
+
 
     @PostMapping("/recalculateRoute")
     public ResponseEntity<Route> recalculateRoute(@RequestBody Map<String, String> payload) {

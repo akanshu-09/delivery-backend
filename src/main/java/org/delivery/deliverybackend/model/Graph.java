@@ -3,12 +3,15 @@ package org.delivery.deliverybackend.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Graph {
-    private List<Node> nodes;
-    private List<Edge> edges;
+    private Map<String, Node> nodes = new HashMap<>();
+    private Map<String, List<Edge>> adjacencyList = new HashMap<>();
 }

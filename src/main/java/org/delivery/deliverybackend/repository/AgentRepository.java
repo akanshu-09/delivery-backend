@@ -62,4 +62,17 @@ public class AgentRepository {
         Firestore db = getDb();
         db.collection(COLLECTION_NAME).document(id).update("currentLoad", newLoad);
     }
+
+    // 5. Get all agents in the database (For the React Map)
+    public List<Agent> findAll() throws ExecutionException, InterruptedException {
+        Firestore db = getDb();
+        ApiFuture<QuerySnapshot> future = db.collection(COLLECTION_NAME).get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+
+        List<Agent> agents = new ArrayList<>();
+        for (QueryDocumentSnapshot document : documents) {
+            agents.add(document.toObject(Agent.class));
+        }
+        return agents;
+    }
 }
