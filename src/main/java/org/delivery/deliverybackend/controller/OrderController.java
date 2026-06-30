@@ -23,11 +23,11 @@ public class OrderController {
 
     @PostMapping("/addOrder")
     public ResponseEntity<Order> addOrder(@RequestBody Order incomingOrder) throws Exception {
-        System.out.println("Saving REAL order to Firestore: " + incomingOrder.getId());
-
+        if (incomingOrder.getId() == null || incomingOrder.getId().isEmpty()) {
+            incomingOrder.setId("ord-" + System.currentTimeMillis());
+        }
         incomingOrder.setStatus(OrderStatus.PENDING);
         orderRepository.save(incomingOrder); // Saves directly to the cloud
-
         return ResponseEntity.ok(incomingOrder);
     }
 

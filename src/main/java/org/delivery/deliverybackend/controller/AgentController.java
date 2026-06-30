@@ -30,6 +30,26 @@ public class AgentController {
         return ResponseEntity.ok(agents);
     }
 
+    // 4. Add a NEW Agent dynamically
+    @PostMapping("/addAgent")
+    public ResponseEntity<Agent> addAgent(@RequestBody Agent incomingAgent) throws Exception {
+
+
+        // Ensure standard default values for a brand-new hire
+        incomingAgent.setCurrentLoad(0);
+
+        // If the frontend didn't provide an ID, generate a unique one
+        if (incomingAgent.getId() == null || incomingAgent.getId().isEmpty()) {
+            incomingAgent.setId("agent-" + System.currentTimeMillis());
+        }
+        System.out.println("Adding NEW agent to Firestore: " + incomingAgent.getId());
+
+        // The save method in our repository handles both creates and updates!
+        agentRepository.save(incomingAgent);
+
+        return ResponseEntity.ok(incomingAgent);
+    }
+
     // 3. Update agent state (Real Database Save)
     @PutMapping("/updateAgent")
     public ResponseEntity<Agent> updateAgent(@RequestBody Agent incomingAgent) throws Exception {

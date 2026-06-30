@@ -14,6 +14,6 @@ public class Order
     private Location deliveryLocation;
     private OrderStatus status;
     private long deadlineTimestamp;
-    private int priority;
+    private Integer priority;
     private String assignedAgentId;
 }

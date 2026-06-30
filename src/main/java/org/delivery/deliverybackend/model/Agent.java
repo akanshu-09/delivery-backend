@@ -12,6 +12,6 @@ public class Agent
     private String id;
     private Location currentLocation;
     private AgentStatus status;
-    private int currentLoad;
-    private int maxCapacity;
+    private Integer currentLoad;
+    private Integer maxCapacity;
 }
