@@ -61,4 +61,20 @@ public class OrderRepository {
         Firestore db = getDb();
         db.collection(COLLECTION_NAME).document(id).update("assignedAgentId", agentId);
     }
+
+    // Fetch all orders assigned to a specific driver
+    public List<Order> findByAgentId(String agentId) throws Exception {
+        System.out.println("🔍 Querying Firestore for orders assigned to: " + agentId);
+        Firestore db = getDb();
+        List<Order> agentOrders = new ArrayList<>();
+        ApiFuture<QuerySnapshot> future = db.collection("orders")
+                .whereEqualTo("assignedAgentId", agentId)
+                .get();
+
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+        for (QueryDocumentSnapshot document : documents) {
+            agentOrders.add(document.toObject(Order.class));
+        }
+        return agentOrders;
+    }
 }
