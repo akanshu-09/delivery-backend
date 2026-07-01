@@ -20,4 +20,5 @@ public class Route
     private long createdAt;
     private double totalDistanceKm;
     private long estimatedArrivalTimestamp;
+    private String optimizationMode;
 }
