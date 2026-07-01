@@ -88,4 +88,26 @@ public class GraphLoader implements CommandLineRunner {
 
         return nearest;
     }
+
+    public void applyTrafficDelays(Map<String, Double> delayMap) {
+        System.out.println("🌧️ GraphLoader: Applying live traffic delays to the city grid...");
+
+        if (delayMap == null || delayMap.isEmpty()) {
+            return;
+        }
+
+        for (Map.Entry<String, Double> entry : delayMap.entrySet()) {
+            String routeKey = entry.getKey(); // e.g., "n1-n2"
+            Double factor = entry.getValue(); // e.g., 2.5
+
+            String[] nodes = routeKey.split("-");
+            if (nodes.length == 2) {
+                String fromId = nodes[0];
+                String toId = nodes[1];
+
+                // Fire the update to the live graph instance
+                systemGraph.updateTrafficFactor(fromId, toId, factor);
+            }
+        }
+    }
 }

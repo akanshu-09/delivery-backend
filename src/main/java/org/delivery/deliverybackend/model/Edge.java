@@ -11,5 +11,5 @@ public class Edge {
     private String fromNodeId;
     private String toNodeId;
     private double distanceKm;
-    private double trafficWeight; // Multiplier: 1.0 is normal, 1.5 is heavy traffic
+    private double trafficWeight = 1.0; // Multiplier: 1.0 is normal, 1.5 is heavy traffic
 }
