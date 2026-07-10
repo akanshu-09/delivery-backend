@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class Agent
 {
     private String id;
+    private String name;
     private Location currentLocation;
     private AgentStatus status;
     private Integer currentLoad;
