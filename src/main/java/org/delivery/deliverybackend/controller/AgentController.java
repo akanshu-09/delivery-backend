@@ -26,7 +26,7 @@ public class AgentController {
         this.agentRepository = agentRepository;
         this.orderRepository = orderRepository;
     }
-
+ 
     // 2. Get all agents (Real Database Call)
     @GetMapping
     public ResponseEntity<List<Agent>> getAllAgents() throws Exception {
